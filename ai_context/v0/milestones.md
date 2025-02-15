@@ -1,3 +1,5 @@
+v0: 15/02/2025
+
 PHASE 0: PREPARATION & REPO SETUP
 Goal: Get the dev environment ready, set up Git/GitHub, and plan the project structure.
 1.	Set Up Git & GitHub

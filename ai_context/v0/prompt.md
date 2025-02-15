@@ -1,3 +1,5 @@
+v0: 15/02/2025
+
 Role
 I need an AI assistant to help me design, build, and understand a full-stack MVP efficiently. I need solid, comprehensive yet concise guidance throughout this process.
  

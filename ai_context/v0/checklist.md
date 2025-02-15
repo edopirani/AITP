@@ -1,3 +1,5 @@
+v0: 15/02/2025
+
 Prompt: AI Trip Planner Context & Checklist for Continuity
 💡 This is an ongoing project where I am building an AI-powered travel planning MVP. Below is all the relevant project context, tech stack, and progress. Use this information to provide structured, relevant, and efficient responses without me having to re-explain details.
 ❗ At the end of this chat, when I request an updated checklist, you must automatically update any changes, log completed tasks, and revise pending issues before providing the new version. Also, if you feel like the first prompt explaining your role needs to be modified, if you learned something new, re-print an updated version of that as well.
@@ -59,3 +61,4 @@ my-app/
 ✔ tRPC (for frontend-backend communication).
 ✔ TailwindCSS (for styling).
 
+6️⃣ Update milestones and prompt if anything has changed since the last update.

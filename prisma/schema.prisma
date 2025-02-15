@@ -1,0 +1,52 @@
+/*
+📌 What This File Does:
+- Defines the database structure using Prisma.
+- We start with a `User` model to store travelers.
+- We also define a `Trip` model to store planned trips.
+
+💡 Why Use Prisma?
+- Prisma provides a **type-safe** way to interact with the database.
+- It ensures **structured data**, reducing errors and inconsistencies.
+- It generates an ORM (Object-Relational Mapping) client, allowing **easier database queries**.
+
+💡 Why Use a `User` Model?
+- Every trip must belong to a **specific traveler**.
+- The `User` model stores traveler details, like `name` and `email`.
+- Each user can have **multiple trips** (one-to-many relationship).
+
+💡 Why Use a `Trip` Model?
+- The `Trip` model allows users to **save planned trips**.
+- It stores the `destination`, `startDate`, and `endDate` of the trip.
+- It connects to the `User` model, ensuring each trip has an **owner**.
+*/
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/* 📌 What This File Does:
+- Defines database models for users and their trips.
+- Ensures proper relations between `User` and `Trip`.
+*/
+
+model User {
+  id       String  @id @default(uuid())  // Unique user ID
+  userId String  @unique               // Custom user identifier
+  email    String  @unique               // Email must be unique
+  password String                         // Encrypted password
+  trips    Trip[]                         // Relation to trips
+}
+
+model Trip {
+  id          String  @id @default(uuid()) // Unique trip ID
+  userId      String                        // Foreign key to User
+  destination String                        // Travel destination
+  startDate   String                        // Trip start date
+  endDate     String                        // Trip end date
+  user        User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
