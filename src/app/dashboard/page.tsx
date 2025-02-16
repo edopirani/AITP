@@ -31,7 +31,7 @@ export default function Dashboard() {
 
   // State for authentication
   const [userId, setUserId] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  // const [token, setToken] = useState<string | null>(null);
 
   // State for trip creation
   const [destination, setDestination] = useState("");
@@ -60,7 +60,7 @@ export default function Dashboard() {
       router.push("/auth"); // Redirect to login page if not authenticated
     } else {
       setUserId(storedUserId);
-      setToken(storedToken);
+      // setToken(storedToken);
     }
   }, [router]);
 
@@ -69,7 +69,7 @@ export default function Dashboard() {
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
     setUserId(null);
-    setToken(null);
+    // setToken(null);
     router.push("/auth"); // Redirect back to login
   };
 

@@ -9,6 +9,7 @@ What This File Does:
 */
 
 import { useState } from "react";
+import { TRPCClientError } from "@trpc/client";
 import { trpc } from "@/utils/trpc";
 import { useRouter } from "next/navigation";
 
@@ -64,21 +65,30 @@ export default function AuthPage() {
     },
   });
 
-  // Handle validation errors from tRPC
-  const handleValidationErrors = (error: any) => {
-    setError(null); // Reset general error
-    setValidationErrors([]); // Reset validation errors
+// Function to handle validation errors safely
+const handleValidationErrors = (error: unknown) => {
+  setError(null); // Reset general error
+  setValidationErrors([]); // Reset validation errors
 
-    if (error?.data?.zodError?.fieldErrors) {
-      // Extract validation errors from Zod
-      const extractedErrors = Object.entries(error.data.zodError.fieldErrors).map(
-        ([field, messages]: [string, unknown]) => `${field}: ${(messages as string[])?.[0]}`
-      );
+  if (error instanceof TRPCClientError) {
+    // Extract errors from tRPC error response
+    const errorData = error.data as { zodError?: { fieldErrors?: Record<string, string[]> } };
+
+    if (errorData?.zodError?.fieldErrors) {
+      const extractedErrors = Object.values(errorData.zodError.fieldErrors).flat();
       setValidationErrors(extractedErrors);
-    } else {
-      setError("An unexpected error occurred.");
+      return;
     }
-  };
+  }
+
+  // If it's not a tRPC error, show generic error
+  if (error instanceof Error) {
+    setError(error.message);
+  } else {
+    setError("An unexpected error occurred.");
+  }
+};
+
 
   const handleSubmit = () => {
     setError(null); // Clear previous general errors

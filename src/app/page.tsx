@@ -13,13 +13,13 @@ import { trpc } from "@/utils/trpc";
 
 export default function Page() {
   const router = useRouter();
-  const [userId, setUserId] = useState("");
+  const [userId] = useState(""); //setUserId 
 
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push("/auth");
     }
-  }, []);
+  }, [router]);
 
   // Fetch trips for the logged-in user
   const { data: trips, isLoading } = trpc.getTripsByUser.useQuery({ userId }, { enabled: !!userId });
