@@ -22,7 +22,6 @@ export const appRouter = t.router({
     )
     .mutation(async ({ input }) => {
       try {
-        // Check if username or email is already taken
         const existingUser = await prisma.user.findFirst({
           where: {
             OR: [{ userId: input.username }, { email: input.email }],
@@ -33,10 +32,8 @@ export const appRouter = t.router({
           return { success: false, message: "Username or Email already in use." };
         }
 
-        // Hash the password before storing
         const hashedPassword = await bcrypt.hash(input.password, 10);
 
-        // Create user in the database
         const user = await prisma.user.create({
           data: {
             userId: input.username,
@@ -45,11 +42,11 @@ export const appRouter = t.router({
           },
         });
 
-        // Generate JWT Token
         const token = jwt.sign({ userId: user.userId }, SECRET_KEY, { expiresIn: "1h" });
 
         return { success: true, token, user };
       } catch (error) {
+        console.error("Registration Error:", error);
         return { success: false, message: "Registration failed. Please try again." };
       }
     }),
@@ -58,13 +55,12 @@ export const appRouter = t.router({
   login: t.procedure
     .input(
       z.object({
-        identifier: z.string(), // Can be email or username
+        identifier: z.string(),
         password: z.string(),
       })
     )
     .mutation(async ({ input }) => {
       try {
-        // Find user by email OR username
         const user = await prisma.user.findFirst({
           where: {
             OR: [{ email: input.identifier }, { userId: input.identifier }],
@@ -75,17 +71,16 @@ export const appRouter = t.router({
           return { success: false, message: "User not found." };
         }
 
-        // Verify password
         const validPassword = await bcrypt.compare(input.password, user.password);
         if (!validPassword) {
           return { success: false, message: "Invalid credentials." };
         }
 
-        // Generate JWT Token
         const token = jwt.sign({ userId: user.userId }, SECRET_KEY, { expiresIn: "1h" });
 
         return { success: true, token, user };
       } catch (error) {
+        console.error("Login Error:", error);
         return { success: false, message: "Login failed. Please try again." };
       }
     }),
@@ -106,6 +101,7 @@ export const appRouter = t.router({
 
         return { success: true, user };
       } catch (error) {
+        console.error("Fetch Profile Error:", error);
         return { success: false, message: "Failed to fetch user profile." };
       }
     }),
@@ -121,6 +117,7 @@ export const appRouter = t.router({
 
         return { success: true, trips };
       } catch (error) {
+        console.error("Fetch Trips Error:", error);
         return { success: false, message: "Failed to fetch trips." };
       }
     }),
@@ -148,6 +145,7 @@ export const appRouter = t.router({
 
         return { success: true, trip };
       } catch (error) {
+        console.error("Create Trip Error:", error);
         return { success: false, message: "Failed to create trip." };
       }
     }),

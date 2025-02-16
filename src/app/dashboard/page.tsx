@@ -30,8 +30,8 @@ export default function Dashboard() {
   const router = useRouter();
 
   // State for authentication
-  const [userId, setUserId] = useState("");
-  const [token, setToken] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   // State for trip creation
   const [destination, setDestination] = useState("");
@@ -40,8 +40,8 @@ export default function Dashboard() {
 
   // Fetch all trips for the logged-in user
   const { data: trips, isLoading: isLoadingTrips } = trpc.getTripsByUser.useQuery(
-    { userId },
-    { enabled: !!userId }
+    { userId: userId! }, // `!` asserts that userId is never null
+    { enabled: !!userId } // Only fetch trips if a user is logged in
   );
 
   // Create a new trip
@@ -68,6 +68,8 @@ export default function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("token");
+    setUserId(null);
+    setToken(null);
     router.push("/auth"); // Redirect back to login
   };
 
@@ -84,11 +86,12 @@ export default function Dashboard() {
       {isLoadingTrips && <p>Loading trips...</p>}
 
       {/* Display Trips */}
-      {trips && 'trips' in trips && trips.trips.map((trip: Trip) => (
+      {trips?.success && 'trips' in trips && Array.isArray(trips.trips) && trips.trips.map((trip: Trip) => (
         <p key={trip.id}>
           {trip.destination} ({trip.startDate} - {trip.endDate})
         </p>
       ))}
+      {trips && !trips.success && 'message' in trips && <p>{trips.message}</p>}
 
       {/* Form to Add a New Trip */}
       <div className="mt-6">
